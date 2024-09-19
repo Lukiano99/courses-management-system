@@ -31,4 +31,55 @@ export const courseRouter = createTRPCRouter({
       });
       return { success: "Course successfully created!", course };
     }),
+
+  get: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+      if (!course) {
+        throw new TRPCError({
+          message: "Course does not exist!",
+          code: "NOT_FOUND",
+        });
+      }
+
+      return { course };
+    }),
+
+  updateTitle: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        title: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const course = await ctx.db.course.update({
+        where: {
+          id: input.courseId,
+          userId: user.id,
+        },
+        data: {
+          title: input.title,
+        },
+      });
+
+      return { success: "Title updated successfully" };
+    }),
 });
