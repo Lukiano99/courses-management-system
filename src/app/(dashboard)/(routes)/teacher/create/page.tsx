@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -32,16 +33,20 @@ const CreatePage = () => {
       title: "",
     },
   });
-  const { isSubmitting, isValid } = form.formState;
+  const { isValid } = form.formState;
+  const router = useRouter();
 
-  const { mutate: createCourse } = api.course.create.useMutation();
+  const { mutate: createCourse, isPending } = api.course.create.useMutation();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     createCourse(
       { ...values },
       {
         onSuccess: (data) => {
-          toast.success(`${data.success}`);
+          toast.success(`${data.success}`, {
+            description: `Date created: ${data.course.createdAt.toDateString()}`,
+          });
+          router.push(`/teacher/courses/${data.course.id}`);
         },
         onError: (e) => {
           toast.error(`${e.message}`);
@@ -75,7 +80,7 @@ const CreatePage = () => {
                   <FormControl>
                     <Input
                       placeholder="e.g. Advanced web development"
-                      disabled={isSubmitting}
+                      disabled={isPending}
                       {...field}
                     />
                   </FormControl>
@@ -92,9 +97,9 @@ const CreatePage = () => {
                   Cancel
                 </Button>
               </Link>
-              <Button type="submit" disabled={isSubmitting || !isValid}>
-                {!isSubmitting && "Continue"}
-                {isSubmitting && (
+              <Button type="submit" disabled={isPending || !isValid}>
+                {!isPending && "Continue"}
+                {isPending && (
                   <>
                     <Loader2Icon size={22} className="mr-2 animate-spin" />
                     Submitting...

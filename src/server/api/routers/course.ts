@@ -29,6 +29,6 @@ export const courseRouter = createTRPCRouter({
           title: input.title,
         },
       });
-      return { success: "Course successfully created!", ...course };
+      return { success: "Course successfully created!", course };
     }),
 });
