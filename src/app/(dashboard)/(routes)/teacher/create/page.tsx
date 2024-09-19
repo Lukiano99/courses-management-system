@@ -38,7 +38,7 @@ const CreatePage = () => {
     toast.success("Sonner works!");
   };
   const onErrors = () => {
-    console.log("ERROR");
+    toast.error("ERROR");
   };
 
   return (
