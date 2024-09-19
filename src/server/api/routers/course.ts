@@ -110,4 +110,22 @@ export const courseRouter = createTRPCRouter({
 
       return { success: "Description updated successfully" };
     }),
+  updateImageUrl: protectedProcedure
+    .input(
+      z.object({
+        imageUrl: z.string(),
+        courseId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await db.course.update({
+        where: {
+          id: input.courseId,
+          userId: ctx.user.id,
+        },
+        data: {
+          imageUrl: input.imageUrl,
+        },
+      });
+    }),
 });

@@ -69,7 +69,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
         <Button
           variant={"ghost"}
           onClick={toggleEdit}
-          className="transition-all"
+          className="hover:bg-muted-foreground/10"
         >
           {!isEditing ? (
             <>
