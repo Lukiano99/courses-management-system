@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { api } from "@/trpc/react";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -33,9 +34,20 @@ const CreatePage = () => {
   });
   const { isSubmitting, isValid } = form.formState;
 
+  const { mutate: createCourse } = api.course.create.useMutation();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log({ values });
-    toast.success("Sonner works!");
+    createCourse(
+      { ...values },
+      {
+        onSuccess: (data) => {
+          toast.success(`${data.success}`);
+        },
+        onError: (e) => {
+          toast.error(`${e.message}`);
+        },
+      },
+    );
   };
   const onErrors = () => {
     toast.error("ERROR");
