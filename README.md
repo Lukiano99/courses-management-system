@@ -1,29 +1,71 @@
-# Create T3 App
+# Project Name
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This project was initialized using the T3 Stack, a powerful full-stack framework that integrates TypeScript, Next.js, tRPC, and Prisma for seamless development.
 
-## What's next? How do I make an app with this?
+## Technologies Used
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Next.js**: React framework for server-rendered applications.
+- **TypeScript**: Strongly typed JavaScript for improved development experience.
+- **tRPC**: End-to-end typesafe API between client and server.
+- **Prisma**: Type-safe ORM for database interactions.
+- **TailwindCSS**: Utility-first CSS framework for styling.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Getting Started
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+To get started with this project, follow these steps:
 
-## Learn More
+### Prerequisites
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Ensure you have the following installed on your machine:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- [Node.js](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Installation
 
-## How do I deploy this?
+1. **Clone the repository**:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   ```bash
+   git clone https://github.com/yourusername/project-name.git
+
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd project-name
+
+   ```
+
+3. **Install dependencies**:
+
+   ```bash
+   pnpm install
+
+   ```
+
+4. **Running the Development Server**:
+
+   ```bash
+   pnpm dev
+
+   ```
+
+5. **Running the Development Server**:
+
+   ```bash
+   pnpm dev
+
+   Open http://localhost:3000 to view the application in your browser.
+   ```
+
+## Project Structure
+
+- **`src/`**: Application source code (components, pages, utils, etc.).
+- **`prisma/`**: Database schema and Prisma configuration.
+- **`public/`**: Static assets.
+- **`styles/`**: Global styles (using TailwindCSS).
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
