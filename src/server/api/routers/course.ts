@@ -128,4 +128,47 @@ export const courseRouter = createTRPCRouter({
         },
       });
     }),
+  updateCategory: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        categoryId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const course = await db.course.findFirst({
+        where: {
+          id: input.courseId,
+          userId: ctx.user.id,
+        },
+      });
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const category = await db.category.findUnique({
+        where: {
+          id: input.categoryId,
+        },
+      });
+      if (!category) {
+        throw new TRPCError({
+          message: "Category not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      await db.course.update({
+        where: {
+          id: course.id,
+          userId: ctx.user.id,
+        },
+        data: {
+          categoryId: category.id,
+        },
+      });
+    }),
 });

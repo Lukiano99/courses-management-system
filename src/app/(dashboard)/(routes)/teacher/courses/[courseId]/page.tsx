@@ -4,10 +4,14 @@ import { LayoutDashboardIcon } from "lucide-react";
 import TitleForm from "./_components/title-form";
 import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
+import CategoryForm from "./_components/category-form";
 
 const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const courseId = params.courseId;
+
   const { course } = await api.course.get({ courseId });
+
+  const { categories } = await api.category.list();
 
   const requiredFields = [
     course.title,
@@ -20,7 +24,7 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const completedFields = requiredFields.filter(Boolean).length;
 
   const completionText = `(${completedFields}/${totalFields})`;
-
+  console.log({ categories });
   return (
     <div className="p-6">
       <div className="flex items-center justify-between">
@@ -45,6 +49,14 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
           />
           <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
         </div>
       </div>
     </div>
