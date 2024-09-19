@@ -1,9 +1,10 @@
 import { HydrateClient } from "@/trpc/server";
+import { UserButton } from "@clerk/nextjs";
 
 export default async function Home() {
   return (
     <HydrateClient>
-      <div className="bg-muted">test</div>
+      <UserButton />
     </HydrateClient>
   );
 }
