@@ -70,7 +70,7 @@ export const courseRouter = createTRPCRouter({
         });
       }
 
-      const course = await ctx.db.course.update({
+      await ctx.db.course.update({
         where: {
           id: input.courseId,
           userId: user.id,
@@ -81,5 +81,33 @@ export const courseRouter = createTRPCRouter({
       });
 
       return { success: "Title updated successfully" };
+    }),
+  updateDescription: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        description: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      await ctx.db.course.update({
+        where: {
+          id: input.courseId,
+          userId: user.id,
+        },
+        data: {
+          description: input.description,
+        },
+      });
+
+      return { success: "Description updated successfully" };
     }),
 });

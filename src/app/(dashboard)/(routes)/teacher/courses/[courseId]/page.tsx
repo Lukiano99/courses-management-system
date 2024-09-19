@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/server";
 import { LayoutDashboardIcon } from "lucide-react";
 import TitleForm from "./_components/title-form";
+import DescriptionForm from "./_components/description-form";
 
 const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const courseId = params.courseId;
@@ -39,6 +40,10 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
           </div>
           <TitleForm
             initialData={{ title: course.title }}
+            courseId={course.id}
+          />
+          <DescriptionForm
+            initialData={{ description: course.description }}
             courseId={course.id}
           />
         </div>
