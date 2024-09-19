@@ -1,4 +1,4 @@
-# Project Name
+# Courses Management System
 
 This project was initialized using the T3 Stack, a powerful full-stack framework that integrates TypeScript, Next.js, tRPC, and Prisma for seamless development.
 
