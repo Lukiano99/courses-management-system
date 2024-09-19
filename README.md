@@ -9,6 +9,7 @@ This project was initialized using the T3 Stack, a powerful full-stack framework
 - **tRPC**: End-to-end typesafe API between client and server.
 - **Prisma**: Type-safe ORM for database interactions.
 - **TailwindCSS**: Utility-first CSS framework for styling.
+- **Supabase**: Ideal for building scalable applications with a PostgreSQL database.
 
 ## Getting Started
 
