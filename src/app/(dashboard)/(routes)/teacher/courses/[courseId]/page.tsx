@@ -12,6 +12,7 @@ import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form copy";
 import AttachmentForm from "./_components/attachment-form";
+import ChaptersForm from "./_components/chapters-form";
 
 const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const courseId = params.courseId;
@@ -26,6 +27,7 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some((chapter) => chapter.isPublished), // at least one chapter that is published
   ];
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
@@ -72,7 +74,7 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
               </Badge>
               <h2 className="text-xl">Course chapters</h2>
             </div>
-            <DescriptionForm initialData={course} courseId={course.id} />
+            <ChaptersForm initialData={course} courseId={course.id} />
           </div>
           <div>
             <div className="flex items-center gap-x-2">

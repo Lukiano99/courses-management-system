@@ -2,7 +2,7 @@
 import FileUpload from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
-import { Attachment, type Course } from "@prisma/client";
+import { type Attachment, type Course } from "@prisma/client";
 import { FileIcon, Loader2Icon, PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

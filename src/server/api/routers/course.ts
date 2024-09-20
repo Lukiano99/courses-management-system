@@ -42,11 +42,17 @@ export const courseRouter = createTRPCRouter({
       const course = await ctx.db.course.findUnique({
         where: {
           id: input.courseId,
+          userId: ctx.user.id,
         },
         include: {
           attachments: {
             orderBy: {
               createdAt: "desc",
+            },
+          },
+          chapters: {
+            orderBy: {
+              position: "asc",
             },
           },
         },
@@ -320,5 +326,67 @@ export const courseRouter = createTRPCRouter({
       });
 
       return { attachment };
+    }),
+  addChapter: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        title: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const courseOwner = await db.course.findUnique({
+        where: {
+          id: course.id,
+          userId: user.id,
+        },
+      });
+      if (!courseOwner) {
+        throw new TRPCError({
+          message: "Unauthorized",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const lastChapter = await db.chapter.findFirst({
+        where: {
+          courseId: course.id,
+        },
+        orderBy: {
+          position: "desc",
+        },
+      });
+      const newPosition = lastChapter ? lastChapter.position + 1 : 1;
+
+      const newChapter = await db.chapter.create({
+        data: {
+          title: input.title,
+          courseId: input.courseId,
+          position: newPosition,
+          updatedAt: new Date(),
+        },
+      });
+
+      return { success: "Chapter created", chapter: newChapter };
     }),
 });
