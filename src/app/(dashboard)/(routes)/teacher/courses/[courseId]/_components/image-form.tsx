@@ -5,6 +5,7 @@ import { api } from "@/trpc/react";
 import { type Course } from "@prisma/client";
 import { ImageIcon, PencilIcon, PlusCircleIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -24,6 +25,7 @@ const formSchema = z.object({
 const ImageForm = ({ initialData, courseId }: TitleFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
+  const router = useRouter();
 
   const { mutate: updateImageUrl } = api.course.updateImageUrl.useMutation();
 
@@ -33,6 +35,8 @@ const ImageForm = ({ initialData, courseId }: TitleFormProps) => {
       {
         onSuccess: () => {
           toast.success("Image updated successfully");
+          toggleEdit();
+          router.refresh();
         },
         onError: () => {
           toast.error("Something went wrong");
@@ -84,8 +88,6 @@ const ImageForm = ({ initialData, courseId }: TitleFormProps) => {
           <FileUpload
             endpoint="courseImage"
             onChange={(url) => {
-              console.log("URL:");
-              console.log({ url });
               if (url) {
                 onSubmit({ imageUrl: url });
               }
