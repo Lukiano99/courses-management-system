@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
+import { ToggleTheme } from "./toggle-theme";
 
 const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -27,6 +28,9 @@ const NavbarRoutes = () => {
           </Button>
         </Link>
       )}
+      <div className="mx-2">
+        <ToggleTheme />
+      </div>
       <div className="flex size-fit rounded-full">
         <UserButton afterSwitchSessionUrl="/" />
       </div>

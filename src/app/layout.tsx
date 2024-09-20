@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-
+import { ThemeProvider } from "@/components/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
@@ -20,10 +20,17 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
-          <TRPCReactProvider>
-            {children}
-            <Toaster />
-          </TRPCReactProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TRPCReactProvider>
+              {children}
+              <Toaster richColors />
+            </TRPCReactProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
