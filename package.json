@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.6.0",
+    "@hello-pangea/dnd": "^17.0.0",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.14.0",
     "@radix-ui/react-dialog": "^1.1.1",

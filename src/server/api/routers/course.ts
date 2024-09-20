@@ -7,6 +7,7 @@ import {
 } from "@/server/api/trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
+import { reorderChaptersSchema } from "@/schemas/index";
 
 export const courseRouter = createTRPCRouter({
   create: protectedProcedure
@@ -388,5 +389,58 @@ export const courseRouter = createTRPCRouter({
       });
 
       return { success: "Chapter created", chapter: newChapter };
+    }),
+  reorderChapters: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        list: reorderChaptersSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+          userId: user.id,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const courseOwner = await db.course.findUnique({
+        where: {
+          id: course.id,
+          userId: user.id,
+        },
+      });
+      if (!courseOwner) {
+        throw new TRPCError({
+          message: "Unauthorized",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      for (const item of input.list) {
+        await db.chapter.update({
+          where: {
+            id: item.id,
+          },
+          data: {
+            position: item.position,
+          },
+        });
+      }
     }),
 });

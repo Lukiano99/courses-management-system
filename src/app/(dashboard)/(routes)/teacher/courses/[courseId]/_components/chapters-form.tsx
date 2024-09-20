@@ -18,6 +18,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import ChaptersList from "./chapters-list";
+import { type ReorderChaptersType } from "@/schemas";
 
 interface ChaptersFormProps {
   initialData: Course & { chapters: Chapter[] };
@@ -42,20 +44,25 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const { isValid } = form.formState;
 
   const { mutate: addChapter, isPending } = api.course.addChapter.useMutation();
+  const { mutate: reorderChapters } = api.course.reorderChapters.useMutation();
 
   const toggleUpdating = () => setIsUpdating((current) => !current);
   const toggleCreating = () => setIsCreating((current) => !current);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    toggleUpdating();
     addChapter(
       { ...values, courseId },
       {
         onSuccess: (data) => {
+          toggleUpdating();
+
           toast.success(`${data.success}`);
           toggleCreating();
           router.refresh();
         },
         onError: (e) => {
+          toggleUpdating();
           toast.error(`${e.message}`);
         },
       },
@@ -64,8 +71,40 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const onErrors = () => {
     toast.error("Error");
   };
+
+  const onReorder = (reorderedChapters: ReorderChaptersType) => {
+    toggleUpdating();
+    reorderChapters(
+      {
+        courseId,
+        list: reorderedChapters,
+      },
+      {
+        onSuccess: () => {
+          toggleUpdating();
+          toast.success("Chapter position changed successfully");
+
+          router.refresh();
+        },
+        onError: () => {
+          toggleUpdating();
+          toast.error("Something went wrong");
+        },
+      },
+    );
+  };
+
+  const onEdit = () => {
+    toast.info("To do!");
+  };
+
   return (
-    <div className="mt-6 rounded-md border bg-muted p-4 transition-all">
+    <div className="relative mt-6 rounded-md border bg-muted p-4 transition-all">
+      {isUpdating && (
+        <div className="absolute right-0 top-0 flex size-full items-center justify-center rounded-md bg-muted-foreground/20 text-primary">
+          <Loader2Icon className="animate-spin" />
+        </div>
+      )}
       <div className="flex items-center justify-between font-medium transition-all">
         Course chapters
         <Button
@@ -125,7 +164,11 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           )}
         >
           {!initialData.chapters.length && "No chapters"}
-          {/* TODO add a list of chapters */}
+          <ChaptersList
+            onEdit={onEdit}
+            onReorder={(reorderedChapters) => onReorder(reorderedChapters)}
+            items={initialData.chapters || []}
+          />
         </div>
       )}
       {!isCreating && (
