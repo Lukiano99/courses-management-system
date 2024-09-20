@@ -10,7 +10,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-interface TitleFormProps {
+interface ImageFormProps {
   initialData: Course;
   courseId: string;
 }
@@ -22,7 +22,7 @@ const formSchema = z.object({
   }),
 });
 
-const ImageForm = ({ initialData, courseId }: TitleFormProps) => {
+const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const router = useRouter();

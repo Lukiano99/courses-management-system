@@ -43,6 +43,13 @@ export const courseRouter = createTRPCRouter({
         where: {
           id: input.courseId,
         },
+        include: {
+          attachments: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+        },
       });
       if (!course) {
         throw new TRPCError({
@@ -69,7 +76,18 @@ export const courseRouter = createTRPCRouter({
           code: "UNAUTHORIZED",
         });
       }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
 
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
       await ctx.db.course.update({
         where: {
           id: input.courseId,
@@ -201,5 +219,106 @@ export const courseRouter = createTRPCRouter({
           price: input.price,
         },
       });
+    }),
+  addAttachment: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        url: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const courseOwner = await db.course.findUnique({
+        where: {
+          id: course.id,
+          userId: user.id,
+        },
+      });
+      if (!courseOwner) {
+        throw new TRPCError({
+          message: "Unauthorized",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const attachment = await db.attachment.create({
+        data: {
+          url: input.url,
+          name: input.url.split("/").pop() ?? "untitled",
+          courseId: input.courseId,
+        },
+      });
+
+      return { attachment };
+    }),
+  deleteAttachment: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        attachmentId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const courseOwner = await db.course.findUnique({
+        where: {
+          id: course.id,
+          userId: user.id,
+        },
+      });
+      if (!courseOwner) {
+        throw new TRPCError({
+          message: "Unauthorized",
+          code: "UNAUTHORIZED",
+        });
+      }
+
+      const attachment = await db.attachment.delete({
+        where: {
+          id: input.attachmentId,
+          courseId: input.courseId,
+        },
+      });
+
+      return { attachment };
     }),
 });

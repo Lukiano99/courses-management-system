@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-interface TitleFormProps {
+interface DescriptionFormProps {
   initialData: Course;
   courseId: string;
 }
@@ -30,7 +30,7 @@ const formSchema = z.object({
   }),
 });
 
-const DescriptionForm = ({ initialData, courseId }: TitleFormProps) => {
+const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

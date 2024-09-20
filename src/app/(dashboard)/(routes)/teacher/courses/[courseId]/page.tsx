@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/server";
 import {
   CircleDollarSignIcon,
+  FileIcon,
   LayoutDashboardIcon,
   ListCheckIcon,
 } from "lucide-react";
@@ -10,6 +11,7 @@ import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form copy";
+import AttachmentForm from "./_components/attachment-form";
 
 const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const courseId = params.courseId;
@@ -80,6 +82,15 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
               <h2 className="text-xl">Sell your course</h2>
             </div>
             <PriceForm initialData={course} courseId={courseId} />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <Badge variant={"icon"}>
+                <FileIcon />
+              </Badge>
+              <h2 className="text-xl">Resources and attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={course.id} />
           </div>
         </div>
       </div>
