@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -10,6 +8,14 @@ import { TRPCError } from "@trpc/server";
 
 export const categoryRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user.id;
+    if (!userId) {
+      throw new TRPCError({
+        message: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
+    }
+
     const categories = await db.category.findMany({
       orderBy: {
         name: "asc",

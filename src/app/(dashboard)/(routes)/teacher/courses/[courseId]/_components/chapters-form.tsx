@@ -69,7 +69,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
     );
   };
   const onErrors = () => {
-    toast.error("Error");
+    toast.error("Something went wront");
   };
 
   const onReorder = (reorderedChapters: ReorderChaptersType) => {
@@ -94,8 +94,8 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
     );
   };
 
-  const onEdit = () => {
-    toast.info("To do!");
+  const onEdit = (id: string) => {
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
   };
 
   return (
@@ -165,7 +165,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
         >
           {!initialData.chapters.length && "No chapters"}
           <ChaptersList
-            onEdit={onEdit}
+            onEdit={(chapterId) => onEdit(chapterId)}
             onReorder={(reorderedChapters) => onReorder(reorderedChapters)}
             items={initialData.chapters || []}
           />
