@@ -1,7 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { ArrowLeftIcon, EyeIcon, LayoutDashboardIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  EyeIcon,
+  LayoutDashboardIcon,
+  VideoIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ChapterTitleForm from "./_components/chapter-title-form";
@@ -89,6 +94,14 @@ const ChapterIdPage = async ({
               courseId={courseId}
               chapterId={chapterId}
             />
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center gap-x-2">
+            <Badge variant={"icon"}>
+              <VideoIcon />
+            </Badge>
+            <h2 className="text-xl">Upload video</h2>
           </div>
         </div>
       </div>
