@@ -31,7 +31,11 @@ const formSchema = z.object({
   }),
 });
 
-const ChapterTitleForm = ({ initialData, courseId }: ChapterTitleFormProps) => {
+const ChapterTitleForm = ({
+  initialData,
+  courseId,
+  chapterId,
+}: ChapterTitleFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,15 +43,17 @@ const ChapterTitleForm = ({ initialData, courseId }: ChapterTitleFormProps) => {
     },
   });
   const { isValid } = form.formState;
-  const router = useRouter();
-  const { mutate: updateTitle, isPending } =
-    api.course.updateTitle.useMutation();
 
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+
   const toggleEdit = () => setIsEditing((current) => !current);
+
+  const { mutate: updateTitle, isPending } =
+    api.chapter.updateTitle.useMutation();
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     updateTitle(
-      { ...values, courseId },
+      { ...values, courseId, chapterId },
       {
         onSuccess: (data) => {
           toast.success(`${data.success}`);
@@ -96,7 +102,7 @@ const ChapterTitleForm = ({ initialData, courseId }: ChapterTitleFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      disabled={isPending} // TODO
+                      disabled={isPending}
                       placeholder="e.g. 'Introduction to the course'"
                       {...field}
                     />

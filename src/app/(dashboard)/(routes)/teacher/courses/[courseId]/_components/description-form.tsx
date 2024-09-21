@@ -104,7 +104,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Textarea
-                      disabled={isPending} // TODO
+                      disabled={isPending}
                       placeholder="e.g. 'This course is about...'"
                       {...field}
                     />

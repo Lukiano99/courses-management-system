@@ -95,7 +95,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      disabled={isPending} // TODO
+                      disabled={isPending}
                       placeholder="e.g. 'Advanced web development'"
                       {...field}
                     />
