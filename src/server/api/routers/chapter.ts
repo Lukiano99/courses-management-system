@@ -158,4 +158,61 @@ export const chapterRouter = createTRPCRouter({
 
       return { success: "Chapter title updated successfully", updatedChapter };
     }),
+  updateIsFree: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        chapterId: z.string(),
+        isFree: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const chapter = await ctx.db.chapter.findUnique({
+        where: {
+          id: input.chapterId,
+          courseId: input.courseId,
+        },
+      });
+      console.log("CHAPTER");
+      console.log({ chapter });
+      if (!chapter) {
+        throw new TRPCError({
+          message: "Chapter not found",
+          code: "NOT_FOUND",
+        });
+      }
+      const updatedChapter = await ctx.db.chapter.update({
+        where: {
+          id: chapter.id,
+          courseId: chapter.courseId,
+        },
+        data: {
+          isFree: input.isFree,
+        },
+      });
+
+      // TODO: Handle upload video
+
+      return { success: "Chapter title updated successfully", updatedChapter };
+    }),
 });

@@ -1,11 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { ArrowLeftIcon, LayoutDashboardIcon } from "lucide-react";
+import { ArrowLeftIcon, EyeIcon, LayoutDashboardIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ChapterTitleForm from "./_components/chapter-title-form";
 import ChapterDescriptionForm from "./_components/chapter-description-form";
+import ChapterAccessForm from "./_components/chapter-access-form";
 
 const ChapterIdPage = async ({
   params,
@@ -23,7 +24,12 @@ const ChapterIdPage = async ({
     redirect("/");
   }
 
-  const requiredFields = [chapter.title, chapter.description, chapter.videoUrl];
+  const requiredFields = [
+    chapter.title,
+    chapter.description,
+    // chapter.isFree,
+    chapter.videoUrl,
+  ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
@@ -66,6 +72,19 @@ const ChapterIdPage = async ({
               chapterId={chapterId}
             />
             <ChapterDescriptionForm
+              initialData={chapter}
+              courseId={courseId}
+              chapterId={chapterId}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <Badge variant={"icon"}>
+                <EyeIcon />
+              </Badge>
+              <h2 className="text-xl">Access Settings</h2>
+            </div>
+            <ChapterAccessForm
               initialData={chapter}
               courseId={courseId}
               chapterId={chapterId}
