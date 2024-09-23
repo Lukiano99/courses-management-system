@@ -1,7 +1,7 @@
 "use client";
 
 import { type Chapter } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   DragDropContext,
@@ -20,7 +20,19 @@ interface ChaptersListProps {
 }
 
 const ChaptersList = ({ onEdit, onReorder, items }: ChaptersListProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [chapters, setChapters] = useState(items);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setChapters(items);
+  }, [items]);
+  if (!isMounted) {
+    return null;
+  }
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;

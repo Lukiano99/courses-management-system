@@ -59,6 +59,8 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 
           toast.success(`${data.success}`);
           toggleCreating();
+          form.reset();
+
           router.refresh();
         },
         onError: (e) => {
@@ -83,7 +85,8 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
         onSuccess: () => {
           toggleUpdating();
           toast.success("Chapter position changed successfully");
-
+          form.reset();
+          // TODO - Here seems like router doesn't refresh
           router.refresh();
         },
         onError: () => {
