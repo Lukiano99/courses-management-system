@@ -67,6 +67,18 @@ Ensure you have the following installed on your machine:
 - **`public/`**: Static assets.
 - **`styles/`**: Global styles (using TailwindCSS).
 
+
+- ## Changelog
+
+### [v1.1.0] - 2024-09-23
+- Added image upload functionality using **Uploadthing**.
+  - Users can now upload images directly to the platform.
+  - Integrated Uploadthing API for seamless file uploads and storage.
+
+### [v1.0.0] - 2024-09-15
+- Initial release with full functionality for managing courses, authentication, and database management with Prisma.
+
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
