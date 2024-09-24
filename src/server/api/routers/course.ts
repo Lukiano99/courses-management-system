@@ -564,7 +564,7 @@ export const courseRouter = createTRPCRouter({
         }
       }
 
-      const deletedCourse = await ctx.db.course.delete({
+      await ctx.db.course.delete({
         where: {
           id: input.courseId,
         },
