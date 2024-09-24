@@ -2,7 +2,7 @@
 
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
-import { useConfettiStore } from "@/server/api/routers/hooks/use-confetti-store";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { api } from "@/trpc/react";
 import { CopyXIcon, Loader2Icon, ShareIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

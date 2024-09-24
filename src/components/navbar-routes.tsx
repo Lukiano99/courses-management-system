@@ -5,36 +5,45 @@ import { Button } from "@/components/ui/button";
 import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { ToggleTheme } from "./toggle-theme";
+import SearchInput from "./search-input";
 
 const NavbarRoutes = () => {
   const pathname = usePathname();
 
   const isTeacherPage = pathname.startsWith("/teacher");
   const isPlayerPage = pathname.startsWith("/chapter");
+  const isSearchPage = pathname === "/search";
 
   return (
-    <div className="ml-auto flex items-center gap-x-2">
-      {isTeacherPage || isPlayerPage ? (
-        <Link href={"/"}>
-          <Button variant={"ghost"}>
-            <LogOutIcon className="mr-2" size={18} strokeWidth={1.4} />
-            Exit
-          </Button>
-        </Link>
-      ) : (
-        <Link href={"/teacher/courses"}>
-          <Button size={"sm"} variant={"ghost"}>
-            Teacher Mode
-          </Button>
-        </Link>
+    <>
+      {isSearchPage && (
+        <div className="hidden md:block">
+          <SearchInput />
+        </div>
       )}
-      <div className="mx-2">
-        <ToggleTheme />
+      <div className="ml-auto flex items-center gap-x-2">
+        {isTeacherPage || isPlayerPage ? (
+          <Link href={"/"}>
+            <Button variant={"ghost"}>
+              <LogOutIcon className="mr-2" size={18} strokeWidth={1.4} />
+              Exit
+            </Button>
+          </Link>
+        ) : (
+          <Link href={"/teacher/courses"}>
+            <Button size={"sm"} variant={"ghost"}>
+              Teacher Mode
+            </Button>
+          </Link>
+        )}
+        <div className="mx-2">
+          <ToggleTheme />
+        </div>
+        <div className="flex size-fit rounded-full">
+          <UserButton afterSwitchSessionUrl="/" />
+        </div>
       </div>
-      <div className="flex size-fit rounded-full">
-        <UserButton afterSwitchSessionUrl="/" />
-      </div>
-    </div>
+    </>
   );
 };
 
