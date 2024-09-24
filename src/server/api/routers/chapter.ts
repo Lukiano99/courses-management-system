@@ -9,6 +9,7 @@ import {
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { env } from "@/env";
+import { NextResponse } from "next/server";
 
 const { video } = new Mux({
   tokenId: env.MUX_TOKEN_ID,
@@ -354,7 +355,7 @@ export const chapterRouter = createTRPCRouter({
         });
       }
 
-      const deletedChapter = await ctx.db.chapter.delete({
+      await ctx.db.chapter.delete({
         where: {
           courseId: input.courseId,
           id: input.chapterId,
@@ -383,5 +384,107 @@ export const chapterRouter = createTRPCRouter({
           },
         });
       }
+    }),
+  // Toggle published field
+  publish: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        chapterId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const chapter = await ctx.db.chapter.findUnique({
+        where: {
+          id: input.chapterId,
+          courseId: input.courseId,
+        },
+      });
+
+      if (!chapter) {
+        throw new TRPCError({
+          message: "Chapter not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      if (chapter.isPublished) {
+        await ctx.db.chapter.update({
+          where: {
+            id: input.chapterId,
+            courseId: input.courseId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+
+        const publishedChaptersInCourse = await ctx.db.chapter.findMany({
+          where: {
+            courseId: input.courseId,
+            isPublished: true,
+          },
+        });
+
+        if (!publishedChaptersInCourse.length) {
+          await ctx.db.course.update({
+            where: {
+              id: input.courseId,
+            },
+            data: {
+              isPublished: false,
+            },
+          });
+        }
+
+        return;
+      }
+
+      const muxData = await ctx.db.muxData.findUnique({
+        where: {
+          chapterId: input.chapterId,
+        },
+      });
+      if (
+        !chapter ||
+        !muxData ||
+        !chapter.title ||
+        !chapter.description ||
+        !chapter.videoUrl
+      ) {
+        return new NextResponse("Missing required fields", {
+          status: 400,
+        });
+      }
+
+      await ctx.db.chapter.update({
+        where: {
+          id: input.chapterId,
+          courseId: input.courseId,
+        },
+        data: {
+          isPublished: true,
+        },
+      });
     }),
 });
