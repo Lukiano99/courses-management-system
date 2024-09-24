@@ -8,7 +8,14 @@ import {
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { reorderChaptersSchema } from "@/schemas/index";
+import { NextResponse } from "next/server";
+import Mux from "@mux/mux-node";
+import { env } from "@/env";
 
+const { video } = new Mux({
+  tokenId: env.MUX_TOKEN_ID,
+  tokenSecret: env.MUX_TOKEN_ID,
+});
 export const courseRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
@@ -443,5 +450,124 @@ export const courseRouter = createTRPCRouter({
           },
         });
       }
+    }),
+  togglePublish: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+        include: {
+          chapters: {
+            include: {
+              muxData: true,
+            },
+          },
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      if (course.isPublished) {
+        await ctx.db.course.update({
+          where: {
+            id: input.courseId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+
+        return;
+      }
+
+      const hasPublishedChapters = course.chapters.some(
+        (chapter) => chapter.isPublished,
+      );
+
+      if (
+        !course.title ||
+        !course.description ||
+        !course.imageUrl ||
+        !course.categoryId ||
+        !hasPublishedChapters
+      ) {
+        return new NextResponse("Missing required fields", {
+          status: 401,
+        });
+      }
+
+      await ctx.db.course.update({
+        where: {
+          id: input.courseId,
+          userId: user.id,
+        },
+        data: {
+          isPublished: true,
+        },
+      });
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+        include: {
+          chapters: {
+            include: {
+              muxData: true,
+            },
+          },
+        },
+      });
+
+      if (!course) {
+        return new NextResponse("Course not found", {
+          status: 404,
+        });
+      }
+
+      // We need to delte all mux data that course has
+      for (const chapter of course.chapters) {
+        if (chapter.muxData?.assetId) {
+          await video.assets.delete(chapter.muxData.assetId);
+        }
+      }
+
+      const deletedCourse = await ctx.db.course.delete({
+        where: {
+          id: input.courseId,
+        },
+      });
     }),
 });
