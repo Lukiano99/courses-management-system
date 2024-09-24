@@ -75,6 +75,30 @@ export const courseRouter = createTRPCRouter({
 
       return { course };
     }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const courses = await ctx.db.course.findMany({
+      where: {
+        userId: ctx.user.id, // Filtriraj po korisnikovom ID-u
+      },
+      // include: {
+      //   attachments: {
+      //     orderBy: {
+      //       createdAt: "desc",
+      //     },
+      //   },
+      //   chapters: {
+      //     orderBy: {
+      //       position: "asc",
+      //     },
+      //   },
+      // },
+      orderBy: {
+        createdAt: "desc", // Sortiraj kurseve po datumu kreiranja, najnoviji prvo
+      },
+    });
+
+    return { courses }; // Vrati sve kurseve korisnika
+  }),
 
   updateTitle: protectedProcedure
     .input(
