@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Mux } from "@mux/mux-node";
 
 import {
   createTRPCRouter,
@@ -7,6 +8,12 @@ import {
 } from "@/server/api/trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
+import { env } from "@/env";
+
+const { video } = new Mux({
+  tokenId: env.MUX_TOKEN_ID,
+  tokenSecret: env.MUX_TOKEN_SECRET,
+});
 
 export const chapterRouter = createTRPCRouter({
   get: protectedProcedure
@@ -265,6 +272,41 @@ export const chapterRouter = createTRPCRouter({
         },
         data: {
           videoUrl: input.videoUrl,
+        },
+      });
+
+      // Deleting previous video if exists
+      const existingMuxData = await db.muxData.findFirst({
+        where: {
+          chapterId: input.chapterId,
+        },
+      });
+
+      if (existingMuxData) {
+        await video.assets.delete(existingMuxData.assetId);
+        await db.muxData.delete({
+          where: {
+            id: existingMuxData.id,
+          },
+        });
+      }
+
+      // Creating new video
+      const asset = await video.assets.create({
+        input: [
+          {
+            url: input.videoUrl,
+          },
+        ],
+        playback_policy: ["public"],
+        test: false,
+      });
+
+      await db.muxData.create({
+        data: {
+          chapterId: input.chapterId,
+          assetId: asset.id,
+          playbackId: asset.playback_ids?.[0]?.id,
         },
       });
 

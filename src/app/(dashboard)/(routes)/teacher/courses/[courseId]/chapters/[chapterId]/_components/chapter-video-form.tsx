@@ -1,15 +1,15 @@
 "use client";
+
 import FileUpload from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { type Chapter, type MuxData } from "@prisma/client";
 import { PencilIcon, PlusCircleIcon, VideoIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-
+import MuxPlayer from "@mux/mux-player-react";
 interface ChapterVideoProps {
   initialData: Chapter & { muxData: MuxData | null };
   courseId: string;
@@ -21,7 +21,7 @@ const formSchema = z.object({
   videoUrl: z.string().min(1),
 });
 
-const ChapterVideo = ({
+const ChapterVideoForm = ({
   initialData,
   courseId,
   chapterId,
@@ -50,7 +50,7 @@ const ChapterVideo = ({
   return (
     <div className="mt-6 rounded-md border bg-muted p-4 transition-all">
       <div className="flex items-center justify-between font-medium transition-all">
-        Course image
+        Chapter video
         <Button
           variant={"ghost"}
           onClick={toggleEdit}
@@ -66,7 +66,8 @@ const ChapterVideo = ({
           {!isEditing && initialData.videoUrl && (
             <>
               <PencilIcon size={14} className="mr-4" />
-              Edit <video src=""></video>
+              Edit
+              {/* <video src=""></video> */}
             </>
           )}
         </Button>
@@ -77,12 +78,14 @@ const ChapterVideo = ({
             <VideoIcon className="size-10 text-muted-foreground" />
           </div>
         ) : (
-          <div className="relative mt-2 aspect-video">Video uploaded</div>
+          <div className="relative mt-2 aspect-video">
+            <MuxPlayer playbackId={initialData.muxData?.playbackId ?? ""} />
+          </div>
         ))}
       {isEditing && (
         <div>
           <FileUpload
-            endpoint="courseImage"
+            endpoint="chapterVideo"
             onChange={(url) => {
               if (url) {
                 onSubmit({ videoUrl: url });
@@ -94,8 +97,14 @@ const ChapterVideo = ({
           </div>
         </div>
       )}
+      {initialData.videoUrl && !isEditing && (
+        <div className="mt-2 text-xs text-muted-foreground">
+          Videos can take a few minutes to process. Refresh the page if video
+          does not appear.
+        </div>
+      )}
     </div>
   );
 };
 
-export default ChapterVideo;
+export default ChapterVideoForm;
