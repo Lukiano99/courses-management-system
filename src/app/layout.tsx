@@ -1,11 +1,12 @@
 import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/provider/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "@/components/ui/sonner";
+import ConfettiProvider from "@/components/provider/confetti-provider";
 
 export const metadata: Metadata = {
   title: "Course Hub",
@@ -27,6 +28,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <TRPCReactProvider>
+              <ConfettiProvider />
               {children}
               <Toaster richColors />
             </TRPCReactProvider>

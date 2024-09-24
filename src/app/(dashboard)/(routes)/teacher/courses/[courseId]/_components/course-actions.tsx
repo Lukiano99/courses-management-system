@@ -2,6 +2,7 @@
 
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
+import { useConfettiStore } from "@/server/api/routers/hooks/use-confetti-store";
 import { api } from "@/trpc/react";
 import { CopyXIcon, Loader2Icon, ShareIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,8 +20,7 @@ const CourseActions = ({
   isPublished,
 }: CourseActionsProps) => {
   const router = useRouter();
-  // const { mutate: deleteChapter, isPending: isDeleting } =
-  //   api.course.delete.useMutation();
+  const confetti = useConfettiStore();
   const { mutate: publishCourse, isPending: isPublishing } =
     api.course.togglePublish.useMutation();
   const { mutate: deleteCourse, isPending: isDeleting } =
@@ -52,6 +52,7 @@ const CourseActions = ({
         },
         {
           onSuccess: () => {
+            confetti.onOpen();
             toast.success("Course is published successfully!");
             router.refresh();
           },
