@@ -312,4 +312,76 @@ export const chapterRouter = createTRPCRouter({
 
       return { success: "Chapter video updated successfully", updatedChapter };
     }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        courseId: z.string(),
+        chapterId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = ctx.user;
+      if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      const course = await ctx.db.course.findUnique({
+        where: {
+          id: input.courseId,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          message: "Course not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const chapter = await ctx.db.chapter.findUnique({
+        where: {
+          id: input.chapterId,
+          courseId: input.courseId,
+        },
+      });
+
+      if (!chapter) {
+        throw new TRPCError({
+          message: "Chapter not found",
+          code: "NOT_FOUND",
+        });
+      }
+
+      const deletedChapter = await ctx.db.chapter.delete({
+        where: {
+          courseId: input.courseId,
+          id: input.chapterId,
+        },
+      });
+
+      // We need to check if there are any chapter that is published.
+      // Course can't be published if there aren't any published chapters.
+      // If the chapter we just deleted was the only one which was published
+      // we have to unpublished whole course
+
+      const publishedChaptersInCourse = await ctx.db.chapter.findMany({
+        where: {
+          courseId: input.courseId,
+          isPublished: true,
+        },
+      });
+
+      if (!publishedChaptersInCourse.length) {
+        await ctx.db.course.update({
+          where: {
+            id: input.courseId,
+          },
+          data: {
+            isPublished: false,
+          },
+        });
+      }
+    }),
 });

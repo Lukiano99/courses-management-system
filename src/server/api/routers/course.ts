@@ -59,10 +59,11 @@ export const courseRouter = createTRPCRouter({
         },
       });
       if (!course) {
-        throw new TRPCError({
-          message: "Course does not exist!",
-          code: "NOT_FOUND",
-        });
+        return { course: null };
+        // throw new TRPCError({
+        //   message: "Course does not exist!",
+        //   code: "NOT_FOUND",
+        // });
       }
 
       return { course };

@@ -18,7 +18,10 @@ const CoursePage = async ({ params }: { params: { courseId: string } }) => {
   const courseId = params.courseId;
 
   const { course } = await api.course.get({ courseId });
-
+  if (!course) {
+    // TODO 404 pages
+    return <div>There is no course with this Id</div>;
+  }
   const { categories } = await api.category.list();
 
   const requiredFields = [
