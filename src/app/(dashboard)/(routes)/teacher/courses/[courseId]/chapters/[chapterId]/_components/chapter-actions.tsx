@@ -23,8 +23,8 @@ const ChapterActions = ({
   const router = useRouter();
   const { mutate: deleteChapter, isPending: isDeleting } =
     api.chapter.delete.useMutation();
-  const { mutate: publishChapter, isPending: isPublishing } =
-    api.chapter.publish.useMutation();
+  const { mutate: togglePublishChapter, isPending: isPublishing } =
+    api.chapter.togglePublish.useMutation();
 
   const onDelete = () => {
     deleteChapter(
@@ -47,7 +47,7 @@ const ChapterActions = ({
 
   const onPublish = () => {
     if (!isPublished) {
-      publishChapter(
+      togglePublishChapter(
         {
           courseId,
           chapterId,
@@ -64,7 +64,7 @@ const ChapterActions = ({
       );
     }
     if (isPublished) {
-      publishChapter(
+      togglePublishChapter(
         {
           courseId,
           chapterId,

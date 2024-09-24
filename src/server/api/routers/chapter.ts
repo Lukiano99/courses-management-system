@@ -386,7 +386,7 @@ export const chapterRouter = createTRPCRouter({
       }
     }),
   // Toggle published field
-  publish: protectedProcedure
+  togglePublish: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
