@@ -70,7 +70,17 @@ Ensure you have the following installed on your machine:
 
 - ## Changelog
 
-### [v1.1.0] - 2024-09-23
+### [v1.0.2] - 2024-09-25
+- **Video Upload**: Users can now upload their videos effortlessly through **UploadThing**, ensuring a smooth and reliable experience.
+- **Video Processing with Mux**: Once uploaded, videos are automatically processed using **Mux**, a platform designed to handle everything needed to build a stunning web player. Mux simplifies video delivery, ensuring high-quality playback across any page or app.
+  
+## Why Mux?
+
+- **Unified Platform**: Mux provides a single solution for all your video streaming needs, enabling you to embed a beautiful, responsive web player on your platform with minimal setup.
+- **Optimized for Performance**: Mux processes and streams videos with optimal quality and low latency, ensuring the best viewing experience for your users.
+- **Free Plan Available**: Mux offers a **free tier** that doesn’t require a credit card for setup. This plan includes a **Mux badge** and **watermark** on the videos, which makes it an excellent choice for **side projects** and smaller applications without any upfront costs.
+
+### [v1.0.1] - 2024-09-23
 - Added image upload functionality using **Uploadthing**.
   - Users can now upload images directly to the platform.
   - Integrated Uploadthing API for seamless file uploads and storage.
