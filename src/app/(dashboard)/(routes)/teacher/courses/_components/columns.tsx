@@ -8,9 +8,16 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { type Course } from "@prisma/client";
 import { type ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDownIcon, MoreHorizontalIcon, PencilIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 // This type is used to define the shape of our data.
@@ -20,27 +27,61 @@ export const columns: ColumnDef<Course>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => {
+      const isSortedAsc = column.getIsSorted() === "asc";
+      const isSortedDesc = column.getIsSorted() === "desc";
+
       return (
         <Button
-          variant="ghost"
+          variant="link"
+          className={cn(
+            "px-0 text-muted-foreground hover:text-accent-foreground hover:no-underline",
+            (isSortedAsc || isSortedDesc) && "text-primary hover:text-primary",
+          )}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Title
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          {!isSortedAsc && !isSortedDesc && (
+            <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedAsc && !isSortedDesc && (
+            <ArrowUpIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedDesc && !isSortedAsc && (
+            <ArrowDownIcon className="ml-2 h-4 w-4" />
+          )}
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      const title = String(row.getValue("title"));
+      return <div className="font-semibold">{title}</div>;
     },
   },
   {
     accessorKey: "price",
     header: ({ column }) => {
+      const isSortedAsc = column.getIsSorted() === "asc";
+      const isSortedDesc = column.getIsSorted() === "desc";
+
       return (
         <Button
-          variant="ghost"
+          variant="link"
+          className={cn(
+            "px-0 text-muted-foreground hover:text-accent-foreground hover:no-underline",
+            (isSortedAsc || isSortedDesc) && "text-primary hover:text-primary",
+          )}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Price
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          {!isSortedAsc && !isSortedDesc && (
+            <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedAsc && !isSortedDesc && (
+            <ArrowUpIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedDesc && !isSortedAsc && (
+            <ArrowDownIcon className="ml-2 h-4 w-4" />
+          )}
         </Button>
       );
     },
@@ -57,13 +98,28 @@ export const columns: ColumnDef<Course>[] = [
   {
     accessorKey: "isPublished",
     header: ({ column }) => {
+      const isSortedAsc = column.getIsSorted() === "asc";
+      const isSortedDesc = column.getIsSorted() === "desc";
+
       return (
         <Button
-          variant="ghost"
+          variant="link"
+          className={cn(
+            "px-0 text-muted-foreground hover:text-accent-foreground hover:no-underline",
+            (isSortedAsc || isSortedDesc) && "text-primary hover:text-primary",
+          )}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Published
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          {!isSortedAsc && !isSortedDesc && (
+            <ArrowUpDownIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedAsc && !isSortedDesc && (
+            <ArrowUpIcon className="ml-2 h-4 w-4" />
+          )}
+          {isSortedDesc && !isSortedAsc && (
+            <ArrowDownIcon className="ml-2 h-4 w-4" />
+          )}
         </Button>
       );
     },
@@ -78,7 +134,13 @@ export const columns: ColumnDef<Course>[] = [
   },
   {
     id: "actions",
-
+    header: () => {
+      return (
+        <Button variant="link" disabled={true} size={"icon"}>
+          <MoreHorizontalIcon size={18} />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const { id } = row.original;
 
