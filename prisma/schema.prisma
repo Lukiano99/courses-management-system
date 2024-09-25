@@ -2,7 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
+    // I have bug for searching - "new" !== "New"
 }
 
 datasource db {
@@ -31,6 +33,7 @@ model Course {
     chapters    Chapter[]
     Purchase    Purchase[]
 
+    // TODO: fix typo in Category => category
     Category Category? @relation(fields: [categoryId], references: [id])
 
     createdAt DateTime @default(now())

@@ -11,11 +11,20 @@ import { reorderChaptersSchema } from "@/schemas/index";
 import { NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
 import { env } from "@/env";
+import { type Category, type Course } from "@prisma/client";
+import { api } from "@/trpc/server";
+
+type CourseWithProgressWithCategory = Course & {
+  Category: Category | null;
+  chapters: { id: string }[];
+  progress: number | null;
+};
 
 const { video } = new Mux({
   tokenId: env.MUX_TOKEN_ID,
   tokenSecret: env.MUX_TOKEN_ID,
 });
+
 export const courseRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
@@ -75,6 +84,72 @@ export const courseRouter = createTRPCRouter({
 
       return { course };
     }),
+
+  getWithSearch: protectedProcedure
+    .input(
+      z.object({
+        categoryId: z.string().optional(),
+        title: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const courses = await ctx.db.course.findMany({
+        where: {
+          isPublished: true,
+          title: {
+            // this will work properly if we wrote correct our prisma schema
+            // previewFeatures = ["fullTextSearch"]
+            contains: input.title,
+            // searching title doesn't work ("new" !== "New" for example)
+          },
+          ...(input.categoryId ? { categoryId: input.categoryId } : {}),
+        },
+        include: {
+          // TODO: fix typo in Category => category
+          Category: true,
+          chapters: {
+            where: {
+              isPublished: true,
+            },
+            select: {
+              id: true,
+            },
+          },
+          // TODO: fix typo in Purchase => purchase
+          Purchase: {
+            where: {
+              userId: ctx.user.id,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      console.log({ courses });
+
+      const coursesWithProgress: CourseWithProgressWithCategory[] =
+        await Promise.all(
+          courses.map(async (course) => {
+            if (course.Purchase.length === 0) {
+              return {
+                ...course,
+                progress: null,
+              };
+            }
+            const progressPercentage = await api.userProgress.get({
+              courseId: course.id,
+            });
+
+            return {
+              ...course,
+              progress: progressPercentage,
+            };
+          }),
+        );
+
+      return coursesWithProgress;
+    }),
   list: protectedProcedure.query(async ({ ctx }) => {
     const courses = await ctx.db.course.findMany({
       where: {
@@ -99,7 +174,6 @@ export const courseRouter = createTRPCRouter({
 
     return { courses }; // Vrati sve kurseve korisnika
   }),
-
   updateTitle: protectedProcedure
     .input(
       z.object({
