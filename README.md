@@ -74,7 +74,7 @@ Ensure you have the following installed on your machine:
 - **Video Upload**: Users can now upload their videos effortlessly through **UploadThing**, ensuring a smooth and reliable experience.
 - **Video Processing with Mux**: Once uploaded, videos are automatically processed using **Mux**, a platform designed to handle everything needed to build a stunning web player. Mux simplifies video delivery, ensuring high-quality playback across any page or app.
   
-## Why Mux?
+#### Why Mux?
 
 - **Unified Platform**: Mux provides a single solution for all your video streaming needs, enabling you to embed a beautiful, responsive web player on your platform with minimal setup.
 - **Optimized for Performance**: Mux processes and streams videos with optimal quality and low latency, ensuring the best viewing experience for your users.
