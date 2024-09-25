@@ -113,6 +113,7 @@ model Purchase {
     createdAt DateTime @default(now())
     updatedAt DateTime
 
+    @@unique([userId, courseId])
     @@index([courseId])
 }
 

@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  // publicProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { reorderChaptersSchema } from "@/schemas/index";
@@ -53,6 +49,7 @@ export const courseRouter = createTRPCRouter({
     .input(
       z.object({
         courseId: z.string(),
+        userProgress: z.boolean().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -70,6 +67,17 @@ export const courseRouter = createTRPCRouter({
           chapters: {
             orderBy: {
               position: "asc",
+            },
+            include: {
+              ...(input.userProgress
+                ? {
+                    userProgress: {
+                      where: {
+                        userId: ctx.user.id,
+                      },
+                    },
+                  }
+                : {}),
             },
           },
         },

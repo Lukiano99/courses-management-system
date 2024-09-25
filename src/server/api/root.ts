@@ -3,6 +3,7 @@ import { courseRouter } from "./routers/course";
 import { categoryRouter } from "./routers/category";
 import { chapterRouter } from "./routers/chapter";
 import { userProgressRouter } from "./routers/user-pgoress";
+import { purchaseRouter } from "./routers/purchase";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   category: categoryRouter,
   chapter: chapterRouter,
   userProgress: userProgressRouter,
+  purchase: purchaseRouter,
 });
 
 // export type definition of API
