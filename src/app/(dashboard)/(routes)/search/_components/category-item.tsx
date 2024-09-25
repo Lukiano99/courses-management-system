@@ -43,7 +43,7 @@ const CategoryItem = ({ value, label, icon: Icon }: CategoryItemProps) => {
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-x-1 rounded-full border border-muted-foreground/40 px-3 py-2 text-sm transition hover:border-primary/80",
+        "flex items-center gap-x-1 rounded-full border border-muted-foreground/40 px-3 py-2 text-sm transition hover:border-primary/80 hover:text-primary/80",
         isSelected && "border-primary bg-muted text-primary",
       )}
       type="button"

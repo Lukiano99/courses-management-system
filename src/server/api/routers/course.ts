@@ -12,7 +12,7 @@ import { NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
 import { env } from "@/env";
 import { type Category, type Course } from "@prisma/client";
-import { api } from "@/trpc/server";
+import { getUserProgress } from "./user-pgoress";
 
 type CourseWithProgressWithCategory = Course & {
   Category: Category | null;
@@ -137,9 +137,10 @@ export const courseRouter = createTRPCRouter({
                 progress: null,
               };
             }
-            const progressPercentage = await api.userProgress.get({
-              courseId: course.id,
-            });
+            const progressPercentage = await getUserProgress(
+              course.id,
+              ctx.user.id,
+            );
 
             return {
               ...course,

@@ -61,6 +61,8 @@ export const chapterRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log({ ctx });
+      console.log({ input });
       const user = ctx.user;
       if (!user) {
         throw new TRPCError({

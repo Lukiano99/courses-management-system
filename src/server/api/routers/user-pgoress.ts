@@ -3,8 +3,39 @@ import {
   protectedProcedure,
   // publicProcedure,
 } from "@/server/api/trpc";
+import { db } from "@/server/db";
 import { z } from "zod";
 
+export const getUserProgress = async (coruseId: string, userId: string) => {
+  // TODO: Valid other fields (existing user, existing course, etc...)
+
+  const publishedChapters = await db.chapter.findMany({
+    where: {
+      courseId: coruseId,
+      isPublished: true,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const publishedChaptersId = publishedChapters.map((chapter) => chapter.id);
+
+  const validCompletedChapter = await db.userProgress.count({
+    where: {
+      userId: userId,
+      chapterId: {
+        in: publishedChaptersId,
+      },
+      isCompleted: true,
+    },
+  });
+
+  const progressPercentage =
+    (publishedChapters.length / validCompletedChapter) * 100;
+
+  return progressPercentage;
+};
 export const userProgressRouter = createTRPCRouter({
   get: protectedProcedure
     .input(
