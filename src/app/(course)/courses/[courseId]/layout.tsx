@@ -3,6 +3,7 @@ import { api } from "@/trpc/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import CourseSidebar from "./_components/course-sidebar";
+import CourseNavbar from "./_components/course-navbar";
 
 const CourseLayout = async ({
   children,
@@ -27,6 +28,9 @@ const CourseLayout = async ({
 
   return (
     <div className="h-full">
+      <div className="inset-y-0 z-50 h-[80px] md:pl-80">
+        <CourseNavbar course={course} progressCount={progressCount} />
+      </div>
       <div className="fixed inset-y-0 z-50 hidden h-full w-80 flex-col md:flex">
         <CourseSidebar course={course} progressCount={progressCount} />
       </div>

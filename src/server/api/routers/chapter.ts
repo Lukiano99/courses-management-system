@@ -22,6 +22,8 @@ export const chapterRouter = createTRPCRouter({
       z.object({
         chapterId: z.string(),
         courseId: z.string(),
+        isPublished: z.boolean().optional(),
+        getNextChapter: z.boolean().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -37,18 +39,35 @@ export const chapterRouter = createTRPCRouter({
         where: {
           id: input.chapterId,
           courseId: input.courseId,
+          ...(input.isPublished ? { isPublished: input.isPublished } : {}),
         },
         include: {
           muxData: true,
         },
       });
 
-      // if (!chapter) {
-      //   throw new TRPCError({
-      //     message: "Chapter not found",
-      //     code: "NOT_FOUND",
-      //   });
-      // }
+      return { chapter };
+    }),
+  getNext: protectedProcedure
+    .input(
+      z.object({
+        chapterId: z.string(),
+        position: z.number(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const chapter = await db.chapter.findUnique({
+        where: {
+          id: input.chapterId,
+          isPublished: true,
+          position: {
+            gte: input.position,
+          },
+        },
+        include: {
+          muxData: true,
+        },
+      });
 
       return { chapter };
     }),

@@ -37,7 +37,7 @@ export const getUserProgress = async (coruseId: string, userId: string) => {
   return progressPercentage;
 };
 export const userProgressRouter = createTRPCRouter({
-  get: protectedProcedure
+  getPercentage: protectedProcedure
     .input(
       z.object({
         courseId: z.string(),
@@ -74,5 +74,23 @@ export const userProgressRouter = createTRPCRouter({
         (publishedChapters.length / validCompletedChapter) * 100;
 
       return progressPercentage;
+    }),
+  get: protectedProcedure
+    .input(
+      z.object({
+        chapterId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const userProgress = await ctx.db.userProgress.findUnique({
+        where: {
+          userId_chapterId: {
+            userId: ctx.user.id,
+            chapterId: input.chapterId,
+          },
+        },
+      });
+
+      return { userProgress };
     }),
 });

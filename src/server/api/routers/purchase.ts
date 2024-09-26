@@ -1,5 +1,4 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export const purchaseRouter = createTRPCRouter({
@@ -21,9 +20,6 @@ export const purchaseRouter = createTRPCRouter({
           },
         },
       });
-      if (!purchase) {
-        return new NextResponse("No purchases yet");
-      }
 
       return { purchase };
     }),

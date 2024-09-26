@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CheckCircle2Icon, LockIcon, PlayCircleIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -36,6 +35,7 @@ const CourseSidebarItem = ({
 
   return (
     <button
+      onClick={onClick}
       type="button"
       className={cn(
         "flex items-center gap-x-2 pl-6 text-sm font-[500] text-muted-foreground/80 transition-all hover:bg-muted hover:text-muted-foreground",

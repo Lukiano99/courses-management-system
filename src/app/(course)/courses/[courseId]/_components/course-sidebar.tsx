@@ -15,13 +15,14 @@ const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
   const { userId } = auth();
   if (!userId) return "/";
 
-  const purchase = await api.purchase.get({ courseId: course.id });
+  const { purchase } = await api.purchase.get({ courseId: course.id });
 
   return (
     <div className="flex h-full flex-col overflow-y-auto border-r shadow-sm">
-      <div className="flex flex-col border-b p-8">
+      <div className="flex h-[80px] flex-col border-b p-8">
         <h1 className="font-semibold">{course.title}</h1>
         {/* Check purchase and add progress */}
+        TODO: Progress{progressCount}
       </div>
       <div className="flex w-full flex-col">
         {course.chapters.map((chapter) => (
