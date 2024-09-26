@@ -13,6 +13,8 @@ export const env = createEnv({
       .default("development"),
     MUX_TOKEN_ID: z.string(),
     MUX_TOKEN_SECRET: z.string(),
+    STRIPE_API_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -33,6 +35,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     MUX_TOKEN_ID: process.env.MUX_TOKEN_ID,
     MUX_TOKEN_SECRET: process.env.MUX_TOKEN_SECRET,
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
