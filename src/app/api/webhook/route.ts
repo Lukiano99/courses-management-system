@@ -26,8 +26,15 @@ export async function POST(req: Request) {
     );
   }
   const session = event.data.object as Stripe.Checkout.Session;
-  const userId = session.metadata.userId!;
-  const courseId = session.metadata.courseId as string;
+
+  if (!session.metadata) {
+    return new NextResponse(`Webhook error: Metadata is null`, {
+      status: 400,
+    });
+  }
+
+  const userId = session.metadata.userId;
+  const courseId = session.metadata.courseId;
 
   if (event.type === "checkout.session.completed") {
     if (!userId || !courseId) {
@@ -45,7 +52,7 @@ export async function POST(req: Request) {
     });
   } else {
     return new NextResponse(
-      `Webhook Error: Unhandled even type ${event.type}`,
+      `Webhook Error: Unhandled event type ${event.type}`,
       {
         status: 200,
       },
