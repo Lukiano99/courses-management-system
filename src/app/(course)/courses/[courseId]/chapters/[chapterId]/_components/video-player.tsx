@@ -2,6 +2,7 @@
 
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import MuxPlayer from "@mux/mux-player-react";
 import { Loader2Icon, LockIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,6 +28,38 @@ const VideoPlayer = ({
   title,
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
+  const confetti = useConfettiStore();
+
+  const { mutate: completeChapter } =
+    api.userProgress.toggleChapterStatus.useMutation();
+
+  const onEnd = () => {
+    if (completeOnEnd) {
+      completeChapter(
+        {
+          chapterId,
+          isCompleted: true,
+        },
+        {
+          onSuccess: (data) => {
+            if (data.isCompleted && !nextChapterId) {
+              confetti.onOpen();
+            }
+
+            if (data.isCompleted && nextChapterId) {
+              router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+            }
+            router.refresh();
+            toast.success("Progress updated");
+          },
+          onError: (e) => {
+            toast.error("Something went wrong", { description: e.message });
+          },
+        },
+      );
+    }
+  };
 
   return (
     <div className="relative aspect-video">
@@ -46,7 +79,7 @@ const VideoPlayer = ({
           title={title}
           className={cn(!isReady && "hidden")}
           onCanPlay={() => setIsReady(true)}
-          onEnded={() => {}}
+          onEnded={onEnd}
           autoPlay
           playbackId={playbackId}
         />

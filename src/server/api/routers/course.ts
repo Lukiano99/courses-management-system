@@ -134,7 +134,6 @@ export const courseRouter = createTRPCRouter({
           createdAt: "desc",
         },
       });
-      console.log({ courses });
 
       const coursesWithProgress: CourseWithProgressWithCategory[] =
         await Promise.all(

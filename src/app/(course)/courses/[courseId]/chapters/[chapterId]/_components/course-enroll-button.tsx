@@ -20,7 +20,6 @@ const CourseEnrollButton = ({ price, courseId }: CourseEnrollButtonProps) => {
           if (data?.url) window.location.assign(data?.url);
         },
         onError: (error) => {
-          console.log("FRONT");
           toast.error("Something went wrong", { description: error.message });
         },
       },

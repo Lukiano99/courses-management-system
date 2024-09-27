@@ -5,6 +5,7 @@ import VideoPlayer from "./_components/video-player";
 import CourseEnrollButton from "./_components/course-enroll-button";
 import Preview from "@/components/preview";
 import { FileIcon } from "lucide-react";
+import CourseProgressButton from "./_components/course-progress-button";
 
 const ChapterIdPage = async ({
   params,
@@ -34,6 +35,7 @@ const ChapterIdPage = async ({
   }
 
   const { chapter: nextChapter } = await api.chapter.getNext({
+    courseId,
     chapterId,
     position: chapter.position,
   });
@@ -71,7 +73,12 @@ const ChapterIdPage = async ({
           <div className="flex w-full flex-col items-center justify-between p-4 md:flex-row">
             <h2 className="mb2 text-2xl font-semibold">{chapter.title}</h2>
             {purchase ? (
-              <div>{/* TODO: Add CourseProgressButton */}</div>
+              <CourseProgressButton
+                chapterId={chapterId}
+                courseId={courseId}
+                nextChapterId={nextChapter?.id}
+                isCompleted={!!userProgress?.isCompleted}
+              />
             ) : (
               <CourseEnrollButton courseId={courseId} price={course.price!} />
             )}

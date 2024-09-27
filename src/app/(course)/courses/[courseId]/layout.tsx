@@ -25,7 +25,6 @@ const CourseLayout = async ({
   }
 
   const progressCount = await getUserProgress(courseId, user.id);
-  console.log({ progressCount });
   return (
     <div className="h-full">
       <div className="inset-y-0 z-50 h-[80px] md:pl-80">

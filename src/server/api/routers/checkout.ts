@@ -88,10 +88,6 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
-      console.log({
-        myUrl: `${process.env.NEXT_PUBLIC_VERCEL_URL}/courses/${course.id}?success=1`,
-      });
-
       const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL?.startsWith("http")
         ? process.env.NEXT_PUBLIC_VERCEL_URL
         : `http://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
@@ -108,7 +104,6 @@ export const checkoutRouter = createTRPCRouter({
           userId: ctx.user.id,
         },
       });
-      console.log({ url: session.url });
       return { url: session.url };
     }),
 });

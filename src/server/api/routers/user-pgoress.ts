@@ -33,9 +33,6 @@ export const getUserProgress = async (coruseId: string, userId: string) => {
 
   const progressPercentage =
     (validCompletedChapter / publishedChapters.length) * 100;
-  console.log(publishedChapters.length);
-  console.log({ validCompletedChapter });
-  console.log({ progressPercentage });
   return progressPercentage;
 };
 export const userProgressRouter = createTRPCRouter({
@@ -94,5 +91,35 @@ export const userProgressRouter = createTRPCRouter({
       });
 
       return { userProgress };
+    }),
+
+  toggleChapterStatus: protectedProcedure
+    .input(
+      z.object({
+        chapterId: z.string(),
+        isCompleted: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userProgress = await ctx.db.userProgress.upsert({
+        where: {
+          userId_chapterId: {
+            userId: ctx.user.id,
+            chapterId: input.chapterId,
+          },
+        },
+        update: {
+          isCompleted: input.isCompleted,
+          updatedAt: new Date(),
+        },
+        create: {
+          userId: ctx.user.id,
+          chapterId: input.chapterId,
+          isCompleted: input.isCompleted,
+          updatedAt: new Date(),
+        },
+      });
+
+      return { isCompleted: userProgress.isCompleted };
     }),
 });

@@ -51,24 +51,30 @@ export const chapterRouter = createTRPCRouter({
   getNext: protectedProcedure
     .input(
       z.object({
+        courseId: z.string(),
         chapterId: z.string(),
         position: z.number(),
       }),
     )
     .query(async ({ input }) => {
-      const chapter = await db.chapter.findUnique({
+      const chapter = await db.chapter.findFirst({
         where: {
-          id: input.chapterId,
+          id: {
+            not: input.chapterId,
+          },
+          courseId: input.courseId,
           isPublished: true,
           position: {
-            gte: input.position,
+            gt: input.position,
           },
+        },
+        orderBy: {
+          position: "asc",
         },
         include: {
           muxData: true,
         },
       });
-
       return { chapter };
     }),
   updateTitle: protectedProcedure
@@ -80,8 +86,6 @@ export const chapterRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log({ ctx });
-      console.log({ input });
       const user = ctx.user;
       if (!user) {
         throw new TRPCError({
@@ -108,8 +112,6 @@ export const chapterRouter = createTRPCRouter({
           courseId: input.courseId,
         },
       });
-      console.log("CHAPTER");
-      console.log({ chapter });
       if (!chapter) {
         throw new TRPCError({
           message: "Chapter not found",
@@ -165,8 +167,6 @@ export const chapterRouter = createTRPCRouter({
           courseId: input.courseId,
         },
       });
-      console.log("CHAPTER");
-      console.log({ chapter });
       if (!chapter) {
         throw new TRPCError({
           message: "Chapter not found",
@@ -222,8 +222,6 @@ export const chapterRouter = createTRPCRouter({
           courseId: input.courseId,
         },
       });
-      console.log("CHAPTER");
-      console.log({ chapter });
       if (!chapter) {
         throw new TRPCError({
           message: "Chapter not found",
