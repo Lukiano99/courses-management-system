@@ -32,8 +32,10 @@ export const getUserProgress = async (coruseId: string, userId: string) => {
   });
 
   const progressPercentage =
-    (publishedChapters.length / validCompletedChapter) * 100;
-
+    (validCompletedChapter / publishedChapters.length) * 100;
+  console.log(publishedChapters.length);
+  console.log({ validCompletedChapter });
+  console.log({ progressPercentage });
   return progressPercentage;
 };
 export const userProgressRouter = createTRPCRouter({
