@@ -38,20 +38,24 @@ const CourseSidebarItem = ({
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center gap-x-2 pl-6 text-sm font-[500] text-muted-foreground/80 transition-all hover:bg-muted hover:text-muted-foreground",
-        isActive && "bg-muted text-accent-foreground/80",
-        isCompleted && "bg-emerald-100 text-emerald-700 hover:text-emerald-700",
-        isCompleted && isActive && "bg-emerald-200/20",
+        "flex items-center gap-x-2 pl-6 text-sm transition-all hover:bg-muted",
+        isActive && "bg-primary/10 font-semibold hover:bg-primary/20",
+        isCompleted &&
+          "bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100/80 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/40",
+        isCompleted &&
+          isActive &&
+          "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/40 dark:text-green-400 dark:hover:bg-emerald-900/50",
       )}
     >
       <div className="flex items-center gap-x-2 py-4">
         <Icon
           size={22}
-          className={cn(
-            "text-muted-foreground",
-            isActive && "text-accent-foreground/80",
-            isCompleted && "text-emerald-700",
-          )}
+          className={
+            cn()
+            // "text-muted-foreground",
+            // isActive && "text-accent-foreground/80",
+            // isCompleted && "text-emerald-700",
+          }
         />
         {label}
       </div>
