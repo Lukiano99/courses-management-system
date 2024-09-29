@@ -1,6 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { Course, Purchase } from "@prisma/client";
-import { z } from "zod";
+import { type Course, type Purchase } from "@prisma/client";
 
 type PurchaseWithCourse = Purchase & {
   course: Course;
@@ -21,7 +20,7 @@ export const groupByCourse = (purchases: PurchaseWithCourse[]) => {
 };
 
 export const analyticsRouter = createTRPCRouter({
-  get: protectedProcedure.input(z.object({})).query(async ({ ctx, input }) => {
+  get: protectedProcedure.query(async ({ ctx }) => {
     const purchases = await ctx.db.purchase.findMany({
       where: {
         course: {
