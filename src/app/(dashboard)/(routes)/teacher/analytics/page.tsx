@@ -18,7 +18,7 @@ const AnalyticsPage = async () => {
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <DataCard label="Total Revenue" value={totalRevenue} shouldFormat />
         <DataCard label="Total Sales" value={totalSales} />
-        <Chart />
+        <Chart data={data} />
       </div>
     </div>
   );

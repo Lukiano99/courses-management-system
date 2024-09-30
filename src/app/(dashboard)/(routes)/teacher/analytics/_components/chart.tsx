@@ -21,14 +21,13 @@ const Chart = ({ data }: ChartProps) => {
             axisLine={false}
           />
           <YAxis
-            dataKey={"name"}
             stroke="#888888"
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `$${value}}`}
+            tickFormatter={(value) => `$${value}`}
           />
-          <Bar dataKey={"total"} fill="#0369a1" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="total" fill="#2463EA" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </Card>
