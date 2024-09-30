@@ -9,6 +9,7 @@ import Mux from "@mux/mux-node";
 import { env } from "@/env";
 import { type Category, type Course } from "@prisma/client";
 import { getUserProgress } from "./user-pgoress";
+import { isTeacher } from "@/lib/teacher";
 
 type CourseWithProgressWithCategory = Course & {
   Category: Category | null;
@@ -31,6 +32,12 @@ export const courseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.user;
       if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      if (!isTeacher(ctx.user.id)) {
         throw new TRPCError({
           message: "Unauthorized!",
           code: "UNAUTHORIZED",
@@ -197,6 +204,12 @@ export const courseRouter = createTRPCRouter({
           code: "UNAUTHORIZED",
         });
       }
+      if (!isTeacher(ctx.user.id)) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
       const course = await ctx.db.course.findUnique({
         where: {
           id: input.courseId,
@@ -236,7 +249,12 @@ export const courseRouter = createTRPCRouter({
           code: "UNAUTHORIZED",
         });
       }
-
+      if (!isTeacher(ctx.user.id)) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
       await ctx.db.course.update({
         where: {
           id: input.courseId,
@@ -257,6 +275,12 @@ export const courseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (!isTeacher(ctx.user.id)) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
       await db.course.update({
         where: {
           id: input.courseId,
@@ -281,6 +305,12 @@ export const courseRouter = createTRPCRouter({
           userId: ctx.user.id,
         },
       });
+      if (!isTeacher(ctx.user.id)) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
       if (!course) {
         throw new TRPCError({
           message: "Course not found",
@@ -318,6 +348,12 @@ export const courseRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (!isTeacher(ctx.user.id)) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
       const course = await db.course.findFirst({
         where: {
           id: input.courseId,
@@ -351,6 +387,12 @@ export const courseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.user;
       if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      if (!isTeacher(ctx.user.id)) {
         throw new TRPCError({
           message: "Unauthorized!",
           code: "UNAUTHORIZED",
@@ -402,6 +444,12 @@ export const courseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.user;
       if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      if (!isTeacher(ctx.user.id)) {
         throw new TRPCError({
           message: "Unauthorized!",
           code: "UNAUTHORIZED",
@@ -639,6 +687,12 @@ export const courseRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.user;
       if (!user) {
+        throw new TRPCError({
+          message: "Unauthorized!",
+          code: "UNAUTHORIZED",
+        });
+      }
+      if (!isTeacher(ctx.user.id)) {
         throw new TRPCError({
           message: "Unauthorized!",
           code: "UNAUTHORIZED",
