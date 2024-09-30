@@ -1,13 +1,17 @@
 "use client";
-import { UserButton } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { ToggleTheme } from "./toggle-theme";
 import SearchInput from "./search-input";
+import { isTeacher } from "@/lib/teacher";
+import React, { useEffect, useState } from "react";
 
 const NavbarRoutes = () => {
+  const { userId } = useAuth();
+
   const pathname = usePathname();
 
   const isTeacherPage = pathname.startsWith("/teacher");
@@ -30,11 +34,13 @@ const NavbarRoutes = () => {
             </Button>
           </Link>
         ) : (
-          <Link href={"/teacher/courses"}>
-            <Button size={"sm"} variant={"ghost"}>
-              Teacher Mode
-            </Button>
-          </Link>
+          isTeacher(userId) && (
+            <Link href={"/teacher/courses"}>
+              <Button size={"sm"} variant={"ghost"}>
+                Teacher Mode
+              </Button>
+            </Link>
+          )
         )}
         <div className="mx-2">
           <ToggleTheme />

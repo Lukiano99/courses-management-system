@@ -46,7 +46,6 @@ export const dashboardsCoursesRouter = createTRPCRouter({
       const progress = await getUserProgress(course.id, ctx.user.id);
       course.progress = progress;
     }
-    console.log(courses.at(0));
 
     const completedCourses = courses.filter(
       (course) => course.progress === 100,
