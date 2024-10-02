@@ -63,7 +63,6 @@ export const courseRouter = createTRPCRouter({
       const course = await ctx.db.course.findUnique({
         where: {
           id: input.courseId,
-          userId: ctx.user.id,
         },
         include: {
           attachments: {
@@ -162,7 +161,6 @@ export const courseRouter = createTRPCRouter({
             };
           }),
         );
-
       return coursesWithProgress;
     }),
   list: protectedProcedure.query(async ({ ctx }) => {
