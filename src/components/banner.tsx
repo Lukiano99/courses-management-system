@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 const bannerVariants = cva(
-  "border text-center p-4 text-sm flex items-center w-full",
+  "border-b text-center p-4 text-sm flex items-center w-full",
   {
     variants: {
       variant: {
