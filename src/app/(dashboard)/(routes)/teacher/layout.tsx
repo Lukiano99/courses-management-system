@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 const TeacherLayout = ({ children }: { children: React.ReactNode }) => {
   const { userId } = auth();
 
+  console.log(userId);
+
   if (!isTeacher(userId)) {
     return redirect("/");
   }
